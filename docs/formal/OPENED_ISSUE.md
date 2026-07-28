@@ -1,28 +1,40 @@
-# Opened issue (for automated follow-up)
+# Opened issue + fork branch (for automated follow-up)
 
 | Field | Value |
 |-------|--------|
-| Repo | `NVIDIA-NeMo/labs-OO-Agents` |
-| Number | **41** |
-| URL | https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41 |
+| Upstream issue | **#41** — https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41 |
 | Title | `[Feature] Opt-in method-boundary residual contracts for CodeAct postconditions 🤖🤖🤖` |
-| Opened by | `gh` as `linzialessandro` |
-| Agent marker | 🤖🤖🤖 on title and body |
+| Public fork | https://github.com/linzialessandro/labs-OO-Agents |
+| Feature branch | `feature/issue-41-method-boundary-residual-contracts` |
+| Branch URL | https://github.com/linzialessandro/labs-OO-Agents/tree/feature/issue-41-method-boundary-residual-contracts |
+| Remotes | `origin` → fork, `upstream` → `NVIDIA-NeMo/labs-OO-Agents` |
+| Commit | DCO `Signed-off-by` + 🤖🤖🤖; residual-contract slice only |
 
-## Later automation (when maintainer welcomes a PR)
+## What is on the branch (PR-APP scope)
+
+- `src/nooa/formal/application.py` + `model_theory.py` (support) + thin `__init__.py`
+- `APPLICATION.md`, `SCOPE.md`
+- `tests/formal/test_application.py`
+- `examples/formal/`
+- `docs/formal/` (issue / follow-up notes)
+
+Theory-heavy local files (LEARNING, perspectives, …) stay **untracked** for a later optional commit if maintainers ask.
+
+## Later: open PR only after welcome on #41
 
 ```bash
-# Inspect replies / labels
 gh issue view 41 --repo NVIDIA-NeMo/labs-OO-Agents
-gh api repos/NVIDIA-NeMo/labs-OO-Agents/issues/41/comments
 
-# After welcome: branch, DCO commits, PR with 🤖🤖🤖
-git checkout -b feature/method-boundary-residual-contracts
-# ... add only application + tests + APPLICATION.md + example ...
-git commit -s -m "feat: opt-in method-boundary residual postconditions 🤖🤖🤖"
 gh pr create --repo NVIDIA-NeMo/labs-OO-Agents \
+  --head linzialessandro:feature/issue-41-method-boundary-residual-contracts \
+  --base main \
   --title "feat: opt-in method-boundary residual contracts 🤖🤖🤖" \
-  --body "Closes #41 🤖🤖🤖"
+  --body "Closes #41
+
+Opt-in residual contracts for CodeAct postconditions (InvariantError retry).
+Docs: src/nooa/formal/APPLICATION.md. No default runtime change when unused.
+
+🤖🤖🤖"
 ```
 
 Do **not** open a PR until there is positive maintainer signal on #41.
