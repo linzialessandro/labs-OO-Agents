@@ -1,28 +1,23 @@
 # SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-"""Mini-language model theory for NOOA call boundaries.
+"""Private support: tiny satisfaction language for method-boundary residuals.
+
+**Not package public API.** Authors should use
+:func:`nooa.formal.application.method_boundary_contract` (or
+``from nooa.formal import method_boundary_contract``). This module exists so
+:mod:`nooa.formal.application` can compile residual checks into callables that
+raise :class:`~nooa.strategy_validation.InvariantError` for CodeAct retry.
 
 Precision
 ---------
 This is **not** first-order model theory of the Python heap. It defines
 satisfaction for a **fixed tiny formula grammar** on a **partial carrier**
-(``AgentStructure``). See ``perspectives`` / ``IMPLICATIONS.md`` for how this
-relates to CT dual readings and to production validation.
+(``AgentStructure``): type inhabitation, field predicates, result predicates.
 
-Dual with CT (aligned case only)
---------------------------------
-When the theory is ``{ AtomicInhabits(codomain) }`` and the CT object is
-``MethodArrow(..., codomain=codomain)``, both describe the same generation
-boundary the harness enforces with return-type validation. Residuals
-(``AtomicField``, ``AtomicResultPred``) match postconditions that types alone
-cannot express. Build the aligned pair with
-``perspectives.bridge_method_arrow_to_theory``.
-
-Relation to engineering-CL
---------------------------
-``assert_satisfies`` raises ``InvariantError`` so it can ride the same
-model-correctable retry channel as ``run_postconditions``. That is executable
-evidence-carrying rejection — not a foundational constructive type theory.
+Relation to the harness
+-----------------------
+``as_postcondition`` / ``assert_satisfies`` raise ``InvariantError`` so they
+ride the same validation-retry channel as ``run_postconditions``.
 
 Vocabulary (as implemented)
 ---------------------------
@@ -32,13 +27,11 @@ Vocabulary (as implemented)
 | Formula | ``AtomicInhabits`` / ``AtomicField`` / ``AtomicEventTag`` / ``AtomicResultPred`` |
 | ``M ⊨ φ`` | ``satisfies(M, φ)`` |
 | Theory | sequence / ``And`` of formulas |
-| Homomorphism | ``StructureHomomorphism`` — **weak** (result type + shared fields) |
 
 Defer
 -----
-Completeness, ultraproducts, full FOL, elementary embeddings for collapse
-(collapse is lossy — do not call it an embedding). Sandbox-as-reduct is
-metaphor unless the signature is only capability flags.
+Completeness, ultraproducts, full FOL, CT dual catalogs — out of scope for the
+residual-contract contribution.
 """
 
 from __future__ import annotations

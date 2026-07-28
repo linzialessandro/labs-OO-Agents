@@ -3,25 +3,27 @@
 **Shipped intent:** `method_boundary_contract` /
 `method_boundary_postconditions` on CodeAct `postconditions` + `InvariantError`.
 
-## Can we automate with `gh`? (yes)
+**Public API only:** those three names via `nooa.formal` /
+`nooa.formal.application`. `model_theory` is private support.
 
-| Step | Command / rule |
-|------|----------------|
-| Open issue | `gh issue create --repo NVIDIA-NeMo/labs-OO-Agents ...` (done in this goal if auth allows) |
-| Watch for welcome | `gh issue view N --repo ...` / `gh api` comments & labels |
-| Open PR later | only after positive maintainer signal; branch + `git commit -s` + `gh pr create` |
-| Agent rule | Every issue/PR title, commit message, and bot comment ends with **🤖🤖🤖** or CONTRIBUTING says it is closed without review |
+## Process rules
+
+| Step | Rule |
+|------|------|
+| Issue | #41 already open — **do not bump** until maintainers reply |
+| Watch | `gh issue view 41 --repo NVIDIA-NeMo/labs-OO-Agents` (passive) |
+| PR | Only after positive maintainer signal; `git commit -s` + `🤖🤖🤖` if agent-authored |
 | DCO | Every commit: `git commit -s` |
 
-Do **not** open a PR immediately after issue create — wait for welcome
-(comment, label, or explicit “please send a PR”).
+Do **not** open a PR until welcome (comment, label, or explicit “please send a PR”).
 
 ## Decision tree
 
 ```text
 Maintainer reply
 ├── "Looks good / send a PR"
-│     → PR-APP: application.py + APPLICATION.md + test_application + example only
+│     → PR-APP: application-first public API + private model_theory support
+│       + APPLICATION.md + SCOPE.md + test_application + example
 ├── "Move next to strategy_validation"
 │     → same API, different package path
 ├── "Docs-only"
@@ -30,19 +32,26 @@ Maintainer reply
 │     → new small factory; separate issue if large
 ├── "Not wanted"
 │     → close; keep local pattern
-└── Silence
-      → one polite bump with 🤖🤖🤖; then wait
+└── Silence (after private ~14–21 day reassess)
+      → archive & stop; no polite bump; no PR-as-bump
 ```
 
 ## PR-APP scope (when welcomed)
 
-**Include:** `src/nooa/formal/application.py` (+ minimal `__init__` exports if needed),
-`APPLICATION.md`, `tests/formal/test_application.py`, example.
+**Include:**
 
-**Exclude as PR subject:** long CT/MT dual-lens catalogs (can stay unmerged or separate).
+- `src/nooa/formal/application.py`
+- `src/nooa/formal/model_theory.py` (**private support**, not public re-exports)
+- thin `src/nooa/formal/__init__.py` (application API only)
+- `APPLICATION.md`, `SCOPE.md`
+- `tests/formal/test_application.py`
+- `examples/formal/`
+
+**Exclude:** CT/MT dual-lens catalogs, LEARNING/perspectives stacks, article,
+any untracked formal experiments.
 
 ## Recorded issue
 
-**Opened:** https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41  
+**Opened:** https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41
 
 Details: `docs/formal/OPENED_ISSUE.md`.

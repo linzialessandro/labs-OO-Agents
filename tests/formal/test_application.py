@@ -10,7 +10,7 @@ import pytest
 
 from nooa import Agent, strategy
 from nooa.config import CodeActConfig
-from nooa.formal.application import (
+from nooa.formal import (
     MethodBoundaryContract,
     method_boundary_contract,
     method_boundary_postconditions,
@@ -34,6 +34,26 @@ def _resp(calls: list[ToolCall]) -> LLMResponse:
         finish_reason="tool_calls",
         assistant_message={"role": "assistant", "content": ""},
     )
+
+
+def test_package_public_api_is_application_only():
+    """model_theory is private support — not re-exported from nooa.formal."""
+    import nooa.formal as formal
+
+    assert set(formal.__all__) == {
+        "MethodBoundaryContract",
+        "method_boundary_contract",
+        "method_boundary_postconditions",
+    }
+    for private in (
+        "AgentStructure",
+        "AtomicInhabits",
+        "as_postcondition",
+        "models_theory",
+        "satisfies",
+    ):
+        assert private not in formal.__all__
+        assert not hasattr(formal, private)
 
 
 def test_empty_contract_raises():

@@ -5,9 +5,14 @@
 **Opt-in only.** Not re-exported from top-level ``nooa``. No default runtime
 change when unused.
 
-Primary API::
+**Public API** (this package)::
 
     from nooa.formal import method_boundary_contract, method_boundary_postconditions
+
+``model_theory`` is **private support** for :mod:`nooa.formal.application`
+(formula builders + ``as_postcondition``). Do not treat it as a stable public
+surface in reviews or docs — import residual contracts from this package or
+from ``nooa.formal.application``.
 
 See ``APPLICATION.md``.
 """
@@ -17,21 +22,9 @@ from nooa.formal.application import (
     method_boundary_contract,
     method_boundary_postconditions,
 )
-from nooa.formal.model_theory import (
-    AgentStructure,
-    AtomicInhabits,
-    as_postcondition,
-    models_theory,
-    satisfies,
-)
 
 __all__ = [
     "MethodBoundaryContract",
     "method_boundary_contract",
     "method_boundary_postconditions",
-    "AgentStructure",
-    "AtomicInhabits",
-    "as_postcondition",
-    "models_theory",
-    "satisfies",
 ]

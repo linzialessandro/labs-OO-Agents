@@ -14,7 +14,7 @@ import json
 
 from nooa import Agent, strategy
 from nooa.config import CodeActConfig
-from nooa.formal.application import method_boundary_contract
+from nooa.formal import method_boundary_contract
 from nooa.strategies.codeact import CodeActStrategy
 from nooa.unifiedllm import FakeLLMClient, LLMResponse, ToolCall
 

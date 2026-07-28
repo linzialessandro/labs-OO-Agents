@@ -14,9 +14,11 @@ NOOA already has the channel: `CodeActConfig(postconditions=[...])` +
 
 ## Solution (shipped)
 
+**Preferred imports** (package public API):
+
 ```python
 from nooa.config import CodeActConfig
-from nooa.formal.application import method_boundary_contract
+from nooa.formal import method_boundary_contract
 from nooa.strategies import CodeActStrategy
 from nooa import Agent, strategy
 
@@ -38,7 +40,7 @@ class FeedbackAgent(Agent, llm=llm):
 Or shorthand:
 
 ```python
-from nooa.formal.application import method_boundary_postconditions
+from nooa.formal import method_boundary_postconditions
 
 cfg = CodeActConfig(postconditions=method_boundary_postconditions(
     str,
@@ -47,6 +49,11 @@ cfg = CodeActConfig(postconditions=method_boundary_postconditions(
     field_messages={"ready": "set agent.ready before return"},
 ))
 ```
+
+`nooa.formal.application` is the same API (implementation module). Do **not**
+import `nooa.formal.model_theory` for author code — that module is private
+support for residual compilation.
+
 
 ## What you get
 
