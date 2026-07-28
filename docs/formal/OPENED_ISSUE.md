@@ -12,15 +12,13 @@
 
 ## What is on the branch (PR-APP scope)
 
-- `src/nooa/formal/application.py` + thin `__init__.py` (**public API only**)
-- `src/nooa/formal/model_theory.py` (**private support**, not re-exported)
+- `src/nooa/formal/application.py` + thin `__init__.py` (public API only)
 - `APPLICATION.md`, `SCOPE.md`
 - `tests/formal/test_application.py`
 - `examples/formal/`
-- `docs/formal/` (issue / follow-up notes)
+- `docs/formal/` (issue / follow-up notes only)
 
-Theory-heavy local files (LEARNING, perspectives, article, …) stay **untracked**
-and are **not** part of the PR unless maintainers ask later.
+**Assumption:** #41 stays open and unmodified until maintainers reply.
 
 ## Later: open PR only after welcome on #41
 

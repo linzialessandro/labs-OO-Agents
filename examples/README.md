@@ -19,7 +19,7 @@ A progressive tour of the framework. Each step is a standalone, copy-paste-runna
 | 10 | Skills | [`10_skills.py`](quickstart/10_skills.py) |
 | 11 | MCP tools | [`11_mcp.py`](quickstart/11_mcp.py) |
 | — | Sandbox, memory, multimodal, NeMo Flow | see the [Advanced](#advanced-topics) section |
-| — | Formal specs (category theory + constructive contracts) | [`formal/`](formal/) — offline demo + [`LEARNING.md`](../src/nooa/formal/LEARNING.md) |
+| — | Method-boundary residual contracts (CodeAct postconditions) | [`formal/`](formal/) — offline demo + [`APPLICATION.md`](../src/nooa/formal/APPLICATION.md) |
 
 ---
 

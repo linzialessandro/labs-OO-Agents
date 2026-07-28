@@ -81,7 +81,7 @@ Follow-up after reply: `docs/formal/FOLLOWUP.md`
 
 - No change to default CodeAct/Predict when postconditions are not set
 - Not a security boundary or sandbox proof
-- Not a large formal-theory package as the deliverable (optional docs may exist separately)
+- Not a formal-theory package (CT/MT/logic catalogs)
 - Not rewriting the ARC solver (motivation only)
 
 **Alternatives considered**

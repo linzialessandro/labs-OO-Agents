@@ -5,14 +5,9 @@
 **Opt-in only.** Not re-exported from top-level ``nooa``. No default runtime
 change when unused.
 
-**Public API** (this package)::
+Public API::
 
     from nooa.formal import method_boundary_contract, method_boundary_postconditions
-
-``model_theory`` is **private support** for :mod:`nooa.formal.application`
-(formula builders + ``as_postcondition``). Do not treat it as a stable public
-surface in reviews or docs — import residual contracts from this package or
-from ``nooa.formal.application``.
 
 See ``APPLICATION.md``.
 """

@@ -37,7 +37,6 @@ def _resp(calls: list[ToolCall]) -> LLMResponse:
 
 
 def test_package_public_api_is_application_only():
-    """model_theory is private support — not re-exported from nooa.formal."""
     import nooa.formal as formal
 
     assert set(formal.__all__) == {
@@ -45,15 +44,6 @@ def test_package_public_api_is_application_only():
         "method_boundary_contract",
         "method_boundary_postconditions",
     }
-    for private in (
-        "AgentStructure",
-        "AtomicInhabits",
-        "as_postcondition",
-        "models_theory",
-        "satisfies",
-    ):
-        assert private not in formal.__all__
-        assert not hasattr(formal, private)
 
 
 def test_empty_contract_raises():
@@ -72,9 +62,15 @@ def test_result_predicate_raises_via_run_postconditions():
         run_postconditions(object(), "bad", object(), contract.postconditions())
 
 
-def test_describe_theory_optional():
+def test_return_type_raises_via_run_postconditions():
+    contract = method_boundary_contract(str, name="t")
+    with pytest.raises(InvariantError, match="expected type"):
+        run_postconditions(object(), 123, object(), contract.postconditions())
+
+
+def test_describe_optional():
     c = method_boundary_contract(str, result_predicate=lambda s: True, name="analyze")
-    d = c.describe_theory()
+    d = c.describe()
     assert d["application"] == "method_boundary_residual_contract"
     assert d["enforcement"].startswith("InvariantError")
     assert d["name"] == "analyze"
@@ -110,12 +106,7 @@ async def test_method_boundary_retry_on_real_codeact():
 
 
 def test_field_messages_surface_via_run_postconditions():
-    """Custom field_messages must be the InvariantError text (not generic AtomicField).
-
-    Regression: agent_fields used to be compiled into as_postcondition first;
-    run_postconditions stopped on the generic message and never reached
-    method_boundary_field_* hooks.
-    """
+    """Custom field_messages must be the InvariantError text."""
     custom = "agent.ready must be True before accepting result"
     posts = method_boundary_postconditions(
         str,
@@ -129,9 +120,7 @@ def test_field_messages_surface_via_run_postconditions():
 
     with pytest.raises(InvariantError, match="agent.ready must be True before accepting") as ei:
         run_postconditions(Ag(), "done", object(), posts)
-    # Must be the author message, not as_postcondition's structure does not satisfy…
     assert custom in str(ei.value)
-    assert "does not satisfy" not in str(ei.value)
 
 
 def test_field_messages_default_when_omitted():
@@ -173,11 +162,7 @@ async def test_method_boundary_agent_field_ok_on_codeact():
 
 @pytest.mark.asyncio
 async def test_field_message_retry_on_real_codeact():
-    """Custom field_messages text participates in CodeAct InvariantError retry.
-
-    First return fails residual (ready False); second evaluation of the same
-    field predicate passes (count-based stand-in for state fixed mid-run).
-    """
+    """Custom field_messages text participates in CodeAct InvariantError retry."""
     custom = "set agent.ready=True before return_result"
     count = {"n": 0}
 

@@ -14,8 +14,6 @@ NOOA already has the channel: `CodeActConfig(postconditions=[...])` +
 
 ## Solution (shipped)
 
-**Preferred imports** (package public API):
-
 ```python
 from nooa.config import CodeActConfig
 from nooa.formal import method_boundary_contract
@@ -50,11 +48,6 @@ cfg = CodeActConfig(postconditions=method_boundary_postconditions(
 ))
 ```
 
-`nooa.formal.application` is the same API (implementation module). Do **not**
-import `nooa.formal.model_theory` for author code — that module is private
-support for residual compilation.
-
-
 ## What you get
 
 | Behavior | How |
@@ -68,7 +61,7 @@ support for residual compilation.
 ## Introspection (optional)
 
 ```python
-contract.describe_theory()  # name, enforcement path, residual flags
+contract.describe()  # name, enforcement path, residual flags
 ```
 
 ## Offline demo
@@ -79,4 +72,3 @@ uv run pytest tests/formal/test_application.py -q
 ```
 
 Related: https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41
-

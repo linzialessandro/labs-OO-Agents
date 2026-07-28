@@ -15,14 +15,13 @@ that types alone cannot express, without hand-rolling checkers each time:
 * "if kind is WAIT, agent.submitted_turn must match"
 * "result.evidence must be non-empty"
 
-This module is that application. Theory (CT/MT dual) is optional context via
-:meth:`MethodBoundaryContract.describe_theory` — not required to use the hook.
+This module is that application — pure harness hooks, no formal-theory layer.
 
 Usage (copy-paste)::
 
     from nooa import Agent, strategy
     from nooa.config import CodeActConfig
-    from nooa.formal.application import method_boundary_contract
+    from nooa.formal import method_boundary_contract
     from nooa.strategies import CodeActStrategy
 
     contract = method_boundary_contract(
@@ -46,17 +45,26 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
-from nooa.formal.model_theory import (
-    AtomicField,
-    AtomicInhabits,
-    AtomicResultPred,
-    Formula,
-    as_postcondition,
-)
 from nooa.strategy_validation import InvariantError
 
 ResultPredicate = Callable[[Any], bool]
 FieldPredicate = Callable[[Any], bool]
+
+
+def _value_matches_type(value: Any, ty: type | Any) -> bool:
+    """Best-effort type check aligned with common harness return types."""
+    if ty is Any or ty is None:
+        return True
+    if hasattr(ty, "model_validate"):
+        try:
+            ty.model_validate(value)
+            return True
+        except Exception:
+            return False
+    if isinstance(ty, type):
+        return isinstance(value, ty)
+    # Generic aliases and typing constructs: leave to Pydantic/harness typing.
+    return True
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,8 +79,8 @@ class MethodBoundaryContract:
     """
 
     return_type: type | Any | None = None
-    """If set, re-check inhabitation (usually redundant with the method annotation
-    but makes the residual package self-contained and documents the aligned dual)."""
+    """If set, re-check return value against this type (usually matches the
+    method annotation; makes the residual package self-contained)."""
 
     result_predicate: ResultPredicate | None = None
     """Residual on the return *value* (beyond bare type)."""
@@ -86,52 +94,35 @@ class MethodBoundaryContract:
     field_messages: Mapping[str, str] = field(default_factory=dict)
     """Optional per-field failure messages."""
 
-    domain: type | Any | None = None
-    """Optional domain type for theory description only (not enforced here)."""
-
     name: str = "method"
-    """Boundary name for describe_theory / debugging."""
-
-    def formulas(self) -> tuple[Formula, ...]:
-        """MT mini-language view of this contract (for tests/docs)."""
-        out: list[Formula] = []
-        if self.return_type is not None:
-            out.append(AtomicInhabits(self.return_type))
-        if self.result_predicate is not None:
-            pred = self.result_predicate
-            msg = self.result_message
-
-            def _wrapped(value: Any, _pred: ResultPredicate = pred, _msg: str | None = msg) -> bool:
-                ok = bool(_pred(value))
-                if not ok and _msg:
-                    # Predicate itself only returns bool; message applied in postconditions().
-                    pass
-                return ok
-
-            out.append(AtomicResultPred(_wrapped, name="result_predicate"))
-        for attr, pred in self.agent_fields.items():
-            out.append(AtomicField(attr, pred, name=f"agent_field_{attr}"))
-        return tuple(out)
+    """Boundary name for :meth:`describe` / debugging."""
 
     def postconditions(self) -> tuple[Callable[..., None], ...]:
         """Callables for ``CodeActConfig(postconditions=...)``.
 
         Each raises ``InvariantError`` on failure so CodeAct routes feedback
         into the validation-retry channel (same as production ARC residuals).
-
-        Agent-field residuals always use dedicated hooks so ``field_messages``
-        (and a clear default) surface on the real ``run_postconditions`` path.
-        ``as_postcondition`` is used only for optional return-type re-check —
-        never for fields, which would raise a generic message first and skip
-        custom field hooks.
         """
         hooks: list[Callable[..., None]] = []
-        fields = tuple(self.agent_fields.keys())
 
         if self.return_type is not None:
-            hooks.append(
-                as_postcondition(AtomicInhabits(self.return_type), fields=fields)
-            )
+            ty = self.return_type
+            message = f"result does not match expected type {ty!r}"
+
+            def _type_hook(
+                agent: Any,
+                result: Any,
+                call: Any,
+                _ty: type | Any = ty,
+                _message: str = message,
+            ) -> None:
+                if not _value_matches_type(result, _ty):
+                    raise InvariantError(
+                        f"{_message} (got {type(result).__name__})"
+                    )
+
+            _type_hook.__name__ = "method_boundary_return_type"
+            hooks.append(_type_hook)
 
         if self.result_predicate is not None:
             pred = self.result_predicate
@@ -190,7 +181,7 @@ class MethodBoundaryContract:
         """Fragment to merge into ``CodeActConfig(...)``."""
         return {"postconditions": self.postconditions()}
 
-    def describe_theory(self) -> dict[str, Any]:
+    def describe(self) -> dict[str, Any]:
         """Short machine-readable description (not required to attach hooks)."""
         return {
             "application": "method_boundary_residual_contract",
@@ -198,7 +189,6 @@ class MethodBoundaryContract:
             "harness": "CodeActConfig(postconditions=contract.postconditions())",
             "enforcement": "InvariantError → CodeAct validation-retry channel",
             "return_type": repr(self.return_type) if self.return_type is not None else None,
-            "formulas": [repr(f) for f in self.formulas()],
             "residuals": {
                 "result_predicate": self.result_predicate is not None,
                 "agent_fields": list(self.agent_fields.keys()),
@@ -213,7 +203,6 @@ def method_boundary_contract(
     result_message: str | None = None,
     agent_fields: Mapping[str, FieldPredicate] | None = None,
     field_messages: Mapping[str, str] | None = None,
-    domain: type | Any | None = None,
     name: str = "method",
 ) -> MethodBoundaryContract:
     """Build a :class:`MethodBoundaryContract` (primary author-facing entry point).
@@ -224,8 +213,7 @@ def method_boundary_contract(
         result_message: Model-facing retry hint when the residual fails.
         agent_fields: Map of agent attribute name → predicate (live state).
         field_messages: Optional clearer messages per agent field.
-        domain: Optional input type for theory description only.
-        name: Boundary label for debugging / describe_theory.
+        name: Boundary label for debugging / :meth:`MethodBoundaryContract.describe`.
     """
     return MethodBoundaryContract(
         return_type=return_type,
@@ -233,7 +221,6 @@ def method_boundary_contract(
         result_message=result_message,
         agent_fields=dict(agent_fields or {}),
         field_messages=dict(field_messages or {}),
-        domain=domain,
         name=name,
     )
 

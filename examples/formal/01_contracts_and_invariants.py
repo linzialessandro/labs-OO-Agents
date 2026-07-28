@@ -33,9 +33,9 @@ def demo_author_api() -> None:
     )
     print("  hooks:", [getattr(h, "__name__", h) for h in contract.postconditions()])
     print("  CodeActConfig keys:", list(contract.codeact_config_kwargs()))
-    theory = contract.describe_theory()
-    print("  application:", theory["application"])
-    print("  enforcement:", theory["enforcement"])
+    info = contract.describe()
+    print("  application:", info["application"])
+    print("  enforcement:", info["enforcement"])
 
 
 async def demo_residual_retry() -> None:

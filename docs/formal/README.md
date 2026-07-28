@@ -1,6 +1,6 @@
-# Formal contribution pack
+# Residual-contract contribution pack
 
-## Concrete application (lead with this)
+## Concrete application
 
 **Method-boundary residual contracts** → existing CodeAct postcondition /
 `InvariantError` retry channel.
@@ -11,19 +11,13 @@
 - Tests: `tests/formal/test_application.py`
 - Scope: [`SCOPE.md`](../../src/nooa/formal/SCOPE.md)
 
-`model_theory.py` is **private support** for residual compilation — not package
-public API.
-
-Personal theory notes / article (if present under `article/`) stay **out of the
-PR** and are not required reading for maintainers.
-
 ## Issue / follow-up
 
 | Doc | Purpose |
 |-----|---------|
-| **[#41](https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41)** | Opened feature issue (residual contracts) |
+| **[#41](https://github.com/NVIDIA-NeMo/labs-OO-Agents/issues/41)** | Opened feature issue (leave as-is until reply) |
 | [OPENED_ISSUE.md](OPENED_ISSUE.md) | URL + later `gh pr` recipe |
-| [ISSUE_DRAFT.md](ISSUE_DRAFT.md) | Body used for create |
+| [ISSUE_DRAFT.md](ISSUE_DRAFT.md) | Body used for create (archive) |
 | [FOLLOWUP.md](FOLLOWUP.md) | Hard silence until welcome → PR-APP scope |
 
 ```bash

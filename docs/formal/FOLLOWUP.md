@@ -3,14 +3,13 @@
 **Shipped intent:** `method_boundary_contract` /
 `method_boundary_postconditions` on CodeAct `postconditions` + `InvariantError`.
 
-**Public API only:** those three names via `nooa.formal` /
-`nooa.formal.application`. `model_theory` is private support.
+**Public API:** those names via `nooa.formal` / `nooa.formal.application` only.
 
 ## Process rules
 
 | Step | Rule |
 |------|------|
-| Issue | #41 already open — **do not bump** until maintainers reply |
+| Issue | #41 already open — **do not edit or bump** until maintainers reply |
 | Watch | `gh issue view 41 --repo NVIDIA-NeMo/labs-OO-Agents` (passive) |
 | PR | Only after positive maintainer signal; `git commit -s` + `🤖🤖🤖` if agent-authored |
 | DCO | Every commit: `git commit -s` |
@@ -22,8 +21,8 @@ Do **not** open a PR until welcome (comment, label, or explicit “please send a
 ```text
 Maintainer reply
 ├── "Looks good / send a PR"
-│     → PR-APP: application-first public API + private model_theory support
-│       + APPLICATION.md + SCOPE.md + test_application + example
+│     → PR-APP: application.py + __init__ + APPLICATION.md + SCOPE.md
+│       + test_application + example
 ├── "Move next to strategy_validation"
 │     → same API, different package path
 ├── "Docs-only"
@@ -41,14 +40,13 @@ Maintainer reply
 **Include:**
 
 - `src/nooa/formal/application.py`
-- `src/nooa/formal/model_theory.py` (**private support**, not public re-exports)
-- thin `src/nooa/formal/__init__.py` (application API only)
+- thin `src/nooa/formal/__init__.py`
 - `APPLICATION.md`, `SCOPE.md`
 - `tests/formal/test_application.py`
 - `examples/formal/`
 
-**Exclude:** CT/MT dual-lens catalogs, LEARNING/perspectives stacks, article,
-any untracked formal experiments.
+**Exclude:** formal-theory modules, articles, dual-lens catalogs, exploratory
+experiments.
 
 ## Recorded issue
 

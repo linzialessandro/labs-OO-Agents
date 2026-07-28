@@ -2,29 +2,25 @@
 
 ## What this is
 
-An **optional, opt-in** helper package. Import explicitly:
+An **optional, opt-in** helper for method-boundary residual contracts.
+Import explicitly:
 
 ```python
 from nooa.formal import method_boundary_contract
-# or: from nooa.formal.application import method_boundary_contract
 ```
 
-**Primary deliverable:** method-boundary residual contracts — attach residual
-checks to `CodeActConfig(postconditions=...)` with `InvariantError` retry.
-See [`APPLICATION.md`](APPLICATION.md).
+Attach residual checks to `CodeActConfig(postconditions=...)` so failures raise
+`InvariantError` and CodeAct can validation-retry. See [`APPLICATION.md`](APPLICATION.md).
 
 **Public surface:** `MethodBoundaryContract`, `method_boundary_contract`,
-`method_boundary_postconditions` (via `nooa.formal` / `nooa.formal.application`).
-
-**Private support:** `model_theory.py` compiles residuals into postcondition
-callables. Not a stable public API; do not re-export from package `__init__`.
+`method_boundary_postconditions`.
 
 ## What this is not
 
 - Not re-exported from top-level `nooa.__all__`
 - Not a change to default CodeAct/Predict when unused
 - Not a security boundary or sandbox proof
-- Not a large formal-theory framework (CT/MT catalogs, articles stay out of this PR)
+- Not a category-theory / model-theory / formal-logic framework
 
 ## Production attachment
 
