@@ -16,9 +16,10 @@ dependencies = [
     "pydantic>=2.5.0",
     # context_blocks + unifiedllm now ship as nooa.context_blocks /
     # nooa.unifiedllm subpackages — pull their formerly-external deps in.
+    # >=1.95.0: GHSA internal_user_viewer file read fixed in 1.95.0.
     # >=1.84.0: CVE-2026-49468 (Critical, proxy-server RCE) is fixed in 1.84.0;
     # also keeps us past the yanked 1.82.7/1.82.8 (March 2026 backdoor).
-    "litellm>=1.84.0,!=1.107.0",
+    "litellm>=1.95.0,!=1.107.0",
     # from mcp-nemo-oo-agents (now internal)
     "httpx>=0.27.0",
     "openinference-instrumentation-litellm>=0.1.30",
